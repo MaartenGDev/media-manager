@@ -1,6 +1,38 @@
 .media-manager {
-  background-color: #379AFF;
+  background-color: white;
   position: absolute;
   z-index: 1;
   top: 40px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23); }
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  font-family: Arial, serif;
+  width: 600px;
+  border-radius: 10px; }
+  .media-manager__header {
+    padding: 12px 10px;
+    border-radius: 10px 10px 0 0; }
+  .media-manager__title {
+    color: #3A3B3F;
+    margin: 0;
+    font-size: 17px; }
+  .media-manager__content {
+    display: flex;
+    flex-wrap: wrap; }
+  .media-manager__item {
+    width: calc(100% / 6);
+    padding-top: calc(100% / 6);
+    display: inline-block; }
+    .media-manager__item--active {
+      padding-top: calc((600px / 6) - (3px * 2));
+      width: calc((600px / 6) - (3px * 2));
+      border: 3px solid #0366D6; }
+  .media-manager__button {
+    padding: 10px;
+    border-radius: 3px;
+    border: none;
+    background: #379AFF;
+    color: white;
+    font-size: 13px; }
+  .media-manager__footer {
+    background-color: #f4f5f6;
+    padding: 12px 10px;
+    border-radius: 0 0 10px 10px; }

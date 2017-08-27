@@ -80,7 +80,7 @@ var _manager = __webpack_require__(2);
     wrapper: document.querySelector('.app')
   },
   source: {
-    paths: ['https://unsplash.it/100/100', 'https://unsplash.it/100/100', 'https://unsplash.it/100/100', 'https://unsplash.it/100/100', 'https://unsplash.it/100/100', 'https://unsplash.it/100/100', 'https://unsplash.it/100/100']
+    paths: ['https://unsplash.it/100/100', 'https://unsplash.it/100/100', 'https://unsplash.it/300/200', 'https://unsplash.it/150/100', 'https://unsplash.it/90/90', 'https://unsplash.it/100/100', 'https://unsplash.it/100/100']
   }
 });
 
@@ -112,15 +112,51 @@ var buildHeader = function buildHeader(settings) {
   var header = document.createElement('section');
   header.classList.add(settings.classes.header);
 
+  var title = document.createElement('p');
+  title.classList.add(settings.classes.headerTitle);
+
+  var text = document.createTextNode(settings.names.title);
+
+  title.appendChild(text);
+
+  header.appendChild(title);
+
   return header;
 };
 
 var buildResourcePreviews = function buildResourcePreviews(settings) {
-  return settings.source.paths.map(function (path) {
-    var img = document.createElement('img');
-    img.src = path;
-    return img;
+  var wrapper = document.createElement('section');
+  wrapper.classList.add(settings.classes.contentWrapper);
+
+  var resources = settings.source.paths.map(function (path) {
+    var gridItem = document.createElement('section');
+    gridItem.classList.add(settings.classes.item);
+
+    gridItem.style.backgroundImage = 'url(\'' + path + '\')';
+    gridItem.style.backgroundSize = 'contain';
+    gridItem.style.backgroundRepeat = 'no-repeat';
+
+    return gridItem;
   });
+
+  resources.forEach(function (x) {
+    return wrapper.appendChild(x);
+  });
+
+  return wrapper;
+};
+
+var buildFooter = function buildFooter(settings) {
+  var footer = document.createElement('section');
+  footer.classList.add(settings.classes.footer);
+
+  var confirmButton = document.createElement('button');
+  confirmButton.classList.add(settings.classes.button);
+  confirmButton.appendChild(document.createTextNode('Confirm'));
+
+  footer.appendChild(confirmButton);
+
+  return footer;
 };
 
 var toggleMediaManager = function toggleMediaManager(isShown, settings) {
@@ -128,19 +164,21 @@ var toggleMediaManager = function toggleMediaManager(isShown, settings) {
     settings.elements.wrapper.innerHTML = '';
     return;
   }
-
   var wrapper = buildWrapper(settings);
-  var header = buildHeader(settings);
 
-  wrapper.appendChild(header);
-
-  var resources = buildResourcePreviews(settings);
-
-  resources.forEach(function (x) {
-    return wrapper.appendChild(x);
-  });
+  wrapper.appendChild(buildHeader(settings));
+  wrapper.appendChild(buildResourcePreviews(settings));
+  wrapper.appendChild(buildFooter(settings));
 
   settings.elements.wrapper.appendChild(wrapper);
+};
+
+var addEventListenersForMediaActions = function addEventListenersForMediaActions(settings) {
+  settings.elements.wrapper.addEventListener('click', function (evt) {
+    if (evt.target.classList.contains(settings.classes.item)) {
+      evt.target.classList.toggle(settings.classes.activeItem);
+    }
+  });
 };
 
 var init = exports.init = function init(settings) {
@@ -153,7 +191,16 @@ var init = exports.init = function init(settings) {
     },
     classes: {
       wrapper: 'media-manager',
-      header: 'media-manager__header'
+      header: 'media-manager__header',
+      headerTitle: 'media-manager__title',
+      contentWrapper: 'media-manager__content',
+      item: 'media-manager__item',
+      activeItem: 'media-manager__item--active',
+      footer: 'media-manager__footer',
+      button: 'media-manager__button'
+    },
+    names: {
+      title: 'Media Manager'
     },
     source: {
       paths: []
@@ -165,6 +212,8 @@ var init = exports.init = function init(settings) {
 
     toggleMediaManager(isShown, settings);
   });
+
+  addEventListenersForMediaActions(settings);
 };
 
 exports.default = { init: init };

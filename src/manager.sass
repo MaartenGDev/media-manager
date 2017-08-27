@@ -1,6 +1,53 @@
+$popupWidth: 600px
+$itemsPerRow: 6
+$border-radius: 10px
+
+$active-border-width: 3px
+$active-border-color: #0366D6
+
 .media-manager
-  background-color: #379AFF
+  background-color: white
   position: absolute
   z-index: 1
   top: 40px
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)
+  font-family: Arial, serif
+  width: $popupWidth
+  border-radius: $border-radius
+
+  &__header
+    padding: 12px 10px
+    border-radius: $border-radius $border-radius 0 0
+
+  &__title
+    color: #3A3B3F
+    margin: 0
+    font-size: 17px
+
+  &__content
+    display: flex
+    flex-wrap: wrap
+
+  &__item
+    width: calc(100% / #{$itemsPerRow})
+    padding-top: calc(100% / #{$itemsPerRow})
+    display: inline-block
+
+    &--active
+      padding-top: calc((#{$popupWidth} / #{$itemsPerRow}) - (#{$active-border-width} * 2))
+      width: calc((#{$popupWidth} / #{$itemsPerRow}) - (#{$active-border-width} * 2))
+      border: $active-border-width solid $active-border-color
+
+  &__button
+    padding: 10px
+    border-radius: 3px
+    border: none
+    background: #379AFF
+    color: white
+    font-size: 13px
+
+
+  &__footer
+    background-color: hsl(210, 9%, 96%)
+    padding: 12px 10px
+    border-radius: 0 0 $border-radius $border-radius

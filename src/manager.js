@@ -11,15 +11,49 @@ const buildHeader = settings => {
   const header = document.createElement('section')
   header.classList.add(settings.classes.header)
 
-  return header;
+  const title = document.createElement('p')
+  title.classList.add(settings.classes.headerTitle)
+
+  const text = document.createTextNode(settings.names.title)
+
+  title.appendChild(text)
+
+  header.appendChild(title)
+
+  return header
 }
 
 const buildResourcePreviews = settings => {
-  return settings.source.paths.map(path => {
-    const img = document.createElement('img')
-    img.src = path
-    return img
+  const wrapper = document.createElement('section')
+  wrapper.classList.add(settings.classes.contentWrapper)
+
+  const resources = settings.source.paths.map(path => {
+    const gridItem = document.createElement('section')
+    gridItem.classList.add(settings.classes.item)
+
+    gridItem.style.backgroundImage = `url('${path}')`
+    gridItem.style.backgroundSize = 'contain'
+    gridItem.style.backgroundRepeat = 'no-repeat'
+
+    return gridItem
   })
+
+  resources.forEach(x => wrapper.appendChild(x))
+
+  return wrapper
+}
+
+const buildFooter = settings => {
+  const footer = document.createElement('section')
+  footer.classList.add(settings.classes.footer)
+
+  const confirmButton = document.createElement('button')
+  confirmButton.classList.add(settings.classes.button)
+  confirmButton.appendChild(document.createTextNode('Confirm'))
+
+  footer.appendChild(confirmButton)
+
+  return footer
 }
 
 const toggleMediaManager = (isShown, settings) => {
@@ -27,17 +61,21 @@ const toggleMediaManager = (isShown, settings) => {
     settings.elements.wrapper.innerHTML = ''
     return
   }
-
   const wrapper = buildWrapper(settings)
-  const header = buildHeader(settings)
 
-  wrapper.appendChild(header)
-
-  const resources = buildResourcePreviews(settings);
-
-  resources.forEach(x => wrapper.appendChild(x))
+  wrapper.appendChild(buildHeader(settings))
+  wrapper.appendChild(buildResourcePreviews(settings))
+  wrapper.appendChild(buildFooter(settings))
 
   settings.elements.wrapper.appendChild(wrapper)
+}
+
+const addEventListenersForMediaActions = settings => {
+  settings.elements.wrapper.addEventListener('click', (evt) => {
+    if (evt.target.classList.contains(settings.classes.item)) {
+      evt.target.classList.toggle(settings.classes.activeItem)
+    }
+  })
 }
 
 export const init = settings => {
@@ -50,7 +88,16 @@ export const init = settings => {
     },
     classes: {
       wrapper: 'media-manager',
-      header: 'media-manager__header'
+      header: 'media-manager__header',
+      headerTitle: 'media-manager__title',
+      contentWrapper: 'media-manager__content',
+      item: 'media-manager__item',
+      activeItem: 'media-manager__item--active',
+      footer: 'media-manager__footer',
+      button: 'media-manager__button'
+    },
+    names: {
+      title: 'Media Manager'
     },
     source: {
       paths: []
@@ -62,6 +109,8 @@ export const init = settings => {
 
     toggleMediaManager(isShown, settings)
   })
+
+  addEventListenersForMediaActions(settings)
 }
 
 export default {init}
