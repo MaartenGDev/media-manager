@@ -9,5 +9,10 @@ init({
   },
   source: {
     paths: ['https://unsplash.it/100/100', 'https://unsplash.it/100/100', 'https://unsplash.it/300/200', 'https://unsplash.it/150/100', 'https://unsplash.it/90/90', 'https://unsplash.it/100/100', 'https://unsplash.it/100/100']
+  },
+  events: {
+    onConfirm: selectedPaths => {
+      console.log(selectedPaths)
+    }
   }
 })

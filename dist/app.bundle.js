@@ -81,6 +81,11 @@ var _manager = __webpack_require__(2);
   },
   source: {
     paths: ['https://unsplash.it/100/100', 'https://unsplash.it/100/100', 'https://unsplash.it/300/200', 'https://unsplash.it/150/100', 'https://unsplash.it/90/90', 'https://unsplash.it/100/100', 'https://unsplash.it/100/100']
+  },
+  events: {
+    onConfirm: function onConfirm(selectedPaths) {
+      console.log(selectedPaths);
+    }
   }
 });
 
@@ -100,6 +105,9 @@ var _manager = __webpack_require__(2);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 var buildWrapper = function buildWrapper(settings) {
   var wrapper = document.createElement('section');
 
@@ -131,6 +139,7 @@ var buildResourcePreviews = function buildResourcePreviews(settings) {
   var resources = settings.source.paths.map(function (path) {
     var gridItem = document.createElement('section');
     gridItem.classList.add(settings.classes.item);
+    gridItem.dataset.src = path;
 
     gridItem.style.backgroundImage = 'url(\'' + path + '\')';
     gridItem.style.backgroundSize = 'contain';
@@ -158,12 +167,14 @@ var buildFooter = function buildFooter(settings) {
 
   return footer;
 };
+var hideMediaManager = function hideMediaManager(settings) {
+  settings.elements.wrapper.innerHTML = '';
+};
 
-var toggleMediaManager = function toggleMediaManager(isShown, settings) {
-  if (!isShown) {
-    settings.elements.wrapper.innerHTML = '';
-    return;
-  }
+var toggleMediaManager = function toggleMediaManager(settings) {
+  var isShown = settings.elements.wrapper.innerHTML !== '';
+  if (isShown) return hideMediaManager(settings);
+
   var wrapper = buildWrapper(settings);
 
   wrapper.appendChild(buildHeader(settings));
@@ -171,19 +182,37 @@ var toggleMediaManager = function toggleMediaManager(isShown, settings) {
   wrapper.appendChild(buildFooter(settings));
 
   settings.elements.wrapper.appendChild(wrapper);
+
+  addEventListenersForMediaActions(settings);
 };
 
 var addEventListenersForMediaActions = function addEventListenersForMediaActions(settings) {
+  var selectedPaths = [];
+
   settings.elements.wrapper.addEventListener('click', function (evt) {
     if (evt.target.classList.contains(settings.classes.item)) {
       evt.target.classList.toggle(settings.classes.activeItem);
+
+      var path = evt.target.dataset.src;
+      var isActive = evt.target.classList.contains(settings.classes.activeItem);
+
+      if (isActive) {
+        selectedPaths = [].concat(_toConsumableArray(selectedPaths), [path]);
+      } else {
+        selectedPaths = selectedPaths.filter(function (x) {
+          return x !== path;
+        });
+      }
     }
+  });
+
+  document.querySelector('.' + settings.classes.button).addEventListener('click', function () {
+    settings.events.onConfirm(selectedPaths);
+    hideMediaManager(settings);
   });
 };
 
 var init = exports.init = function init(settings) {
-  var isShown = false;
-
   settings = Object.assign({}, {
     elements: {
       toggleElement: '',
@@ -202,18 +231,17 @@ var init = exports.init = function init(settings) {
     names: {
       title: 'Media Manager'
     },
+    events: {
+      onConfirm: function onConfirm() {}
+    },
     source: {
       paths: []
     }
   }, settings);
 
   settings.elements.toggleElement.addEventListener('click', function () {
-    isShown = !isShown;
-
-    toggleMediaManager(isShown, settings);
+    toggleMediaManager(settings);
   });
-
-  addEventListenersForMediaActions(settings);
 };
 
 exports.default = { init: init };
