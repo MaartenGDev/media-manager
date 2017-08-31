@@ -1,3 +1,5 @@
+import './manager.sass'
+
 const buildWrapper = settings => {
   let wrapper = document
     .createElement('section')

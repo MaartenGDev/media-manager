@@ -70,9 +70,7 @@
 "use strict";
 
 
-__webpack_require__(1);
-
-var _manager = __webpack_require__(2);
+var _manager = __webpack_require__(1);
 
 (0, _manager.init)({
   elements: {
@@ -80,7 +78,7 @@ var _manager = __webpack_require__(2);
     wrapper: document.querySelector('.app')
   },
   source: {
-    paths: ['https://unsplash.it/100/100', 'https://unsplash.it/100/100', 'https://unsplash.it/300/200', 'https://unsplash.it/150/100', 'https://unsplash.it/90/90', 'https://unsplash.it/100/100', 'https://unsplash.it/100/100']
+    paths: ['https://unsplash.it/100/100?random&v=1', 'https://unsplash.it/100/100?random&v=2', 'https://unsplash.it/100/100?random&v=3', 'https://unsplash.it/100/100?random&v=4', 'https://unsplash.it/100/100?random&v=5', 'https://unsplash.it/100/100?random&v=6', 'https://unsplash.it/100/100?random&v=7', 'https://unsplash.it/100/100?random&v=8']
   },
   events: {
     onConfirm: function onConfirm(selectedPaths) {
@@ -91,12 +89,6 @@ var _manager = __webpack_require__(2);
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -105,6 +97,9 @@ var _manager = __webpack_require__(2);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.init = undefined;
+
+__webpack_require__(2);
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -245,6 +240,12 @@ var init = exports.init = function init(settings) {
 };
 
 exports.default = { init: init };
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

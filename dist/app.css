@@ -24,7 +24,7 @@
     .media-manager__item--active {
       padding-top: calc((600px / 6) - (3px * 2));
       width: calc((600px / 6) - (3px * 2));
-      border: 3px solid #0366D6; }
+      border: 3px solid #ccc; }
   .media-manager__button {
     padding: 10px;
     border-radius: 3px;
