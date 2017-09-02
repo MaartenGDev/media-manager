@@ -9,11 +9,14 @@
   border-radius: 10px; }
   .media-manager__header {
     padding: 12px 10px;
-    border-radius: 10px 10px 0 0; }
+    border-radius: 10px 10px 0 0;
+    background-color: #FAFBFD; }
   .media-manager__title {
-    color: #3A3B3F;
+    color: #212121;
     margin: 0;
     font-size: 17px; }
+  .media-manager__action-bar {
+    padding: 5px; }
   .media-manager__content {
     display: flex;
     flex-wrap: wrap; }
@@ -27,12 +30,23 @@
       border: 3px solid #ccc; }
   .media-manager__button {
     padding: 10px;
-    border-radius: 3px;
     border: none;
-    background: #379AFF;
     color: white;
-    font-size: 13px; }
+    font-size: 14px;
+    text-transform: uppercase;
+    background-color: transparent;
+    font-weight: 600; }
+    .media-manager__button--upload {
+      font-size: 13px;
+      color: #212121;
+      font-weight: normal; }
+    .media-manager__button--confirm {
+      color: #536DFE; }
+    .media-manager__button--cancel {
+      color: #BDBDBD; }
   .media-manager__footer {
-    background-color: #f4f5f6;
-    padding: 12px 10px;
-    border-radius: 0 0 10px 10px; }
+    background-color: #FAFBFD;
+    padding: 5px;
+    border-radius: 0 0 10px 10px;
+    display: flex;
+    flex-direction: row-reverse; }

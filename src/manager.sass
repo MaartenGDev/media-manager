@@ -18,11 +18,15 @@ $active-border-color: #ccc
   &__header
     padding: 12px 10px
     border-radius: $border-radius $border-radius 0 0
+    background-color: #FAFBFD
 
   &__title
-    color: #3A3B3F
+    color: #212121
     margin: 0
     font-size: 17px
+
+  &__action-bar
+    padding: 5px
 
   &__content
     display: flex
@@ -40,14 +44,26 @@ $active-border-color: #ccc
 
   &__button
     padding: 10px
-    border-radius: 3px
     border: none
-    background: #379AFF
     color: white
-    font-size: 13px
+    font-size: 14px
+    text-transform: uppercase
+    background-color: transparent
+    font-weight: 600
+
+    &--upload
+      font-size: 13px
+      color: #212121
+      font-weight: normal
+    &--confirm
+      color: #536DFE
+    &--cancel
+      color: #BDBDBD
 
 
   &__footer
-    background-color: hsl(210, 9%, 96%)
-    padding: 12px 10px
+    background-color: #FAFBFD
+    padding: 5px
     border-radius: 0 0 $border-radius $border-radius
+    display: flex
+    flex-direction: row-reverse

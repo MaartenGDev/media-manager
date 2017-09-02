@@ -1,15 +1,8 @@
-// Helpers
-const addClassesToNode = (node, classes) => {
-  node.classList.add(...classes)
+import fetch from 'whatwg-fetch'
+import { toArray } from './utilities/array'
+import { addClassesToNode, mergeClasses, createClassSelectors } from './utilities/css'
+/* global FormData */
 
-  return node
-}
-
-const mergeClasses = classes => classes.join('')
-const createClassSelectors = classes => classes.map(c => `.${c}`)
-const toArray = items => typeof items === 'string' ? [items] : [...items]
-
-// Builders
 const buildWrapper = settings => {
   let wrapper = document
     .createElement('section')
@@ -33,6 +26,20 @@ const buildHeader = settings => {
   header.appendChild(title)
 
   return header
+}
+
+const buildActionBar = settings => {
+  let uploadButton = document.createElement('input')
+  uploadButton.setAttribute('type', 'file')
+
+  uploadButton = addClassesToNode(uploadButton, settings.classes.uploadButton)
+  uploadButton.appendChild(document.createTextNode('Upload'))
+
+  let actionBar = document.createElement('section')
+  actionBar = addClassesToNode(actionBar, settings.classes.actionBar)
+  actionBar.appendChild(uploadButton)
+
+  return actionBar
 }
 
 const buildResourcePreviews = settings => {
@@ -60,25 +67,33 @@ const buildFooter = settings => {
   const footer = document.createElement('section')
   footer.classList.add(settings.classes.footer)
 
-  let uploadButton = document.createElement('button')
-  uploadButton = addClassesToNode(uploadButton, toArray(settings.classes.uploadButton))
-  uploadButton.appendChild(document.createTextNode('Upload'))
-
   let confirmButton = document.createElement('button')
-  confirmButton = addClassesToNode(confirmButton, toArray(settings.classes.confirmButton))
+  confirmButton = addClassesToNode(confirmButton, settings.classes.confirmButton)
   confirmButton.appendChild(document.createTextNode('Confirm'))
 
   let cancelButton = document.createElement('button')
-  cancelButton = addClassesToNode(cancelButton, toArray(settings.classes.cancelButton))
+  cancelButton = addClassesToNode(cancelButton, settings.classes.cancelButton)
   cancelButton.appendChild(document.createTextNode('Cancel'))
 
-  footer.appendChild(cancelButton)
   footer.appendChild(confirmButton)
+  footer.appendChild(cancelButton)
 
   return footer
 }
 const hideMediaManager = settings => {
   settings.elements.wrapper.innerHTML = ''
+}
+const postFileToEndpoint = (endpoint, file) => {
+  return new Promise((resolve, reject) => {
+    const data = new FormData()
+    data.append('file', file)
+
+    fetch(endpoint, {
+      method: 'POST',
+      body: data
+    }).then(response => resolve(file))
+      .catch(err => reject(err))
+  })
 }
 
 const toggleMediaManager = settings => {
@@ -88,15 +103,27 @@ const toggleMediaManager = settings => {
   const wrapper = buildWrapper(settings)
 
   wrapper.appendChild(buildHeader(settings))
+  wrapper.appendChild(buildActionBar(settings))
   wrapper.appendChild(buildResourcePreviews(settings))
   wrapper.appendChild(buildFooter(settings))
 
   settings.elements.wrapper.appendChild(wrapper)
 
-  addEventListenersForMediaActions(settings)
+  registerEventListenersForMediaActions(settings)
+  registerEventListenersForActionBar(settings)
+}
+const registerEventListenersForActionBar = settings => {
+  const uploadSelector = mergeClasses(createClassSelectors(toArray(settings.classes.uploadButton)))
+
+  document.querySelector(uploadSelector).addEventListener('change', evt => {
+    const file = evt.target.files[0];
+
+    postFileToEndpoint(settings.uploadEndpoint, file)
+      .then(uploadedFile => settings.events.onUploaded(uploadedFile))
+  })
 }
 
-const addEventListenersForMediaActions = settings => {
+const registerEventListenersForMediaActions = settings => {
   let selectedPaths = []
 
   settings.elements.wrapper.addEventListener('click', evt => {
@@ -128,6 +155,9 @@ export const init = settings => {
       toggleElement: '',
       wrapper: ''
     },
+    settings: {
+      uploadEndpoint: ''
+    },
     classes: {
       wrapper: 'media-manager',
       header: 'media-manager__header',
@@ -136,15 +166,17 @@ export const init = settings => {
       item: 'media-manager__item',
       activeItem: 'media-manager__item--active',
       footer: 'media-manager__footer',
-      confirmButton: ['media-manager__button', 'media-manager__button--secondary'],
-      cancelButton: ['media-manager__button', 'media-manager__button--accent'],
-      uploadButton: ['media-manager__button', 'media-manager__button--primary']
+      actionBar: 'media-manager__action-bar',
+      confirmButton: ['media-manager__button', 'media-manager__button--confirm'],
+      cancelButton: ['media-manager__button', 'media-manager__button--cancel'],
+      uploadButton: ['media-manager__button', 'media-manager__button--upload']
     },
     names: {
       title: 'Media Manager'
     },
     events: {
-      onConfirm: () => {}
+      onConfirm: () => {},
+      onUploaded: () => {}
     },
     source: {
       paths: []
