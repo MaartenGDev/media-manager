@@ -1,5 +1,15 @@
-import './manager.sass'
+// Helpers
+const addClassesToNode = (node, classes) => {
+  node.classList.add(...classes)
 
+  return node
+}
+
+const mergeClasses = classes => classes.join('')
+const createClassSelectors = classes => classes.map(c => `.${c}`)
+const toArray = items => typeof items === 'string' ? [items] : [...items]
+
+// Builders
 const buildWrapper = settings => {
   let wrapper = document
     .createElement('section')
@@ -50,10 +60,19 @@ const buildFooter = settings => {
   const footer = document.createElement('section')
   footer.classList.add(settings.classes.footer)
 
-  const confirmButton = document.createElement('button')
-  confirmButton.classList.add(settings.classes.button)
+  let uploadButton = document.createElement('button')
+  uploadButton = addClassesToNode(uploadButton, toArray(settings.classes.uploadButton))
+  uploadButton.appendChild(document.createTextNode('Upload'))
+
+  let confirmButton = document.createElement('button')
+  confirmButton = addClassesToNode(confirmButton, toArray(settings.classes.confirmButton))
   confirmButton.appendChild(document.createTextNode('Confirm'))
 
+  let cancelButton = document.createElement('button')
+  cancelButton = addClassesToNode(cancelButton, toArray(settings.classes.cancelButton))
+  cancelButton.appendChild(document.createTextNode('Cancel'))
+
+  footer.appendChild(cancelButton)
   footer.appendChild(confirmButton)
 
   return footer
@@ -95,7 +114,9 @@ const addEventListenersForMediaActions = settings => {
     }
   })
 
-  document.querySelector(`.${settings.classes.button}`).addEventListener('click', () => {
+  const confirmSelector = mergeClasses(createClassSelectors(toArray(settings.classes.confirmButton)))
+
+  document.querySelector(confirmSelector).addEventListener('click', () => {
     settings.events.onConfirm(selectedPaths)
     hideMediaManager(settings)
   })
@@ -115,7 +136,9 @@ export const init = settings => {
       item: 'media-manager__item',
       activeItem: 'media-manager__item--active',
       footer: 'media-manager__footer',
-      button: 'media-manager__button'
+      confirmButton: ['media-manager__button', 'media-manager__button--secondary'],
+      cancelButton: ['media-manager__button', 'media-manager__button--accent'],
+      uploadButton: ['media-manager__button', 'media-manager__button--primary']
     },
     names: {
       title: 'Media Manager'

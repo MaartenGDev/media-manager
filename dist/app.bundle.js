@@ -70,7 +70,9 @@
 "use strict";
 
 
-var _manager = __webpack_require__(1);
+__webpack_require__(1);
+
+var _manager = __webpack_require__(2);
 
 (0, _manager.init)({
   elements: {
@@ -89,6 +91,12 @@ var _manager = __webpack_require__(1);
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97,12 +105,31 @@ var _manager = __webpack_require__(1);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.init = undefined;
-
-__webpack_require__(2);
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
+// Helpers
+var addClassesToNode = function addClassesToNode(node, classes) {
+  var _node$classList;
+
+  (_node$classList = node.classList).add.apply(_node$classList, _toConsumableArray(classes));
+
+  return node;
+};
+
+var mergeClasses = function mergeClasses(classes) {
+  return classes.join('');
+};
+var createClassSelectors = function createClassSelectors(classes) {
+  return classes.map(function (c) {
+    return '.' + c;
+  });
+};
+var toArray = function toArray(items) {
+  return typeof items === 'string' ? [items] : [].concat(_toConsumableArray(items));
+};
+
+// Builders
 var buildWrapper = function buildWrapper(settings) {
   var wrapper = document.createElement('section');
 
@@ -154,10 +181,19 @@ var buildFooter = function buildFooter(settings) {
   var footer = document.createElement('section');
   footer.classList.add(settings.classes.footer);
 
+  var uploadButton = document.createElement('button');
+  uploadButton = addClassesToNode(uploadButton, toArray(settings.classes.uploadButton));
+  uploadButton.appendChild(document.createTextNode('Upload'));
+
   var confirmButton = document.createElement('button');
-  confirmButton.classList.add(settings.classes.button);
+  confirmButton = addClassesToNode(confirmButton, toArray(settings.classes.confirmButton));
   confirmButton.appendChild(document.createTextNode('Confirm'));
 
+  var cancelButton = document.createElement('button');
+  cancelButton = addClassesToNode(cancelButton, toArray(settings.classes.cancelButton));
+  cancelButton.appendChild(document.createTextNode('Cancel'));
+
+  footer.appendChild(cancelButton);
   footer.appendChild(confirmButton);
 
   return footer;
@@ -201,7 +237,9 @@ var addEventListenersForMediaActions = function addEventListenersForMediaActions
     }
   });
 
-  document.querySelector('.' + settings.classes.button).addEventListener('click', function () {
+  var confirmSelector = mergeClasses(createClassSelectors(toArray(settings.classes.confirmButton)));
+
+  document.querySelector(confirmSelector).addEventListener('click', function () {
     settings.events.onConfirm(selectedPaths);
     hideMediaManager(settings);
   });
@@ -221,7 +259,9 @@ var init = exports.init = function init(settings) {
       item: 'media-manager__item',
       activeItem: 'media-manager__item--active',
       footer: 'media-manager__footer',
-      button: 'media-manager__button'
+      confirmButton: ['media-manager__button', 'media-manager__button--secondary'],
+      cancelButton: ['media-manager__button', 'media-manager__button--accent'],
+      uploadButton: ['media-manager__button', 'media-manager__button--primary']
     },
     names: {
       title: 'Media Manager'
@@ -240,12 +280,6 @@ var init = exports.init = function init(settings) {
 };
 
 exports.default = { init: init };
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

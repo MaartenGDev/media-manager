@@ -1,3 +1,4 @@
+import './manager.sass'
 import { init } from './manager'
 
 init({

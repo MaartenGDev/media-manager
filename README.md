@@ -4,13 +4,19 @@ Plain javascript media selector.
 ## Preview
 ![Media Manager](./preview.png)
 
+## Design
+![Design](./design.png)
+
 ## Usage
+### html
 ```html
 <section class="app"></section>
 <button id="selectImages">Open</button>
 ```
+### Javascript
 ```js
 import { init } from './manager'
+import './manager.sass'
 
 init({
   elements: {
@@ -27,6 +33,11 @@ init({
     }
   }
 })
+```
+### Styles
+If you prefer importing the styles in a separate sass file use the following import statement.
+```sass
+@import "manager"
 ```
 
 ## Development
