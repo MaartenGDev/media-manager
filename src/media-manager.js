@@ -1,5 +1,5 @@
 import { toArray } from './utilities/array'
-import { addClassesToNode, mergeClasses, createClassSelectors } from './utilities/css'
+import { addClassesToNode, mergeSelectors, createClassSelector } from './utilities/css'
 
 const buildWrapper = settings => {
   let wrapper = document
@@ -101,7 +101,7 @@ const toggleMediaManager = settings => {
 }
 
 const registerEventListenersForActionBar = settings => {
-  const uploadSelector = mergeClasses(createClassSelectors(toArray(settings.classes.uploadButton)))
+  const uploadSelector = mergeSelectors(createClassSelector(toArray(settings.classes.uploadButton)))
 
   document.querySelector(uploadSelector).addEventListener('change', settings.events.onFileSelectionChanged)
 }
@@ -124,7 +124,7 @@ const registerEventListenersForMediaActions = settings => {
     }
   })
 
-  const confirmSelector = mergeClasses(createClassSelectors(toArray(settings.classes.confirmButton)))
+  const confirmSelector = mergeSelectors(createClassSelector(toArray(settings.classes.confirmButton)))
 
   document.querySelector(confirmSelector).addEventListener('click', () => {
     settings.events.onConfirm(selectedPaths)

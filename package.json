@@ -14,21 +14,25 @@
     "media-manager",
     "media manager"
   ],
+  "test": "jest --coverage",
   "scripts": {
     "dev": "webpack --watch",
-    "build": "webpack -p"
+    "build": "webpack -p",
+    "test": "jest --coverage"
   },
   "devDependencies": {
-    "extract-text-webpack-plugin": "^3.0.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
     "css-loader": "^0.28.5",
+    "extract-text-webpack-plugin": "^3.0.0",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.6",
     "standard": "^10.0.3",
     "style-loader": "^0.18.2",
     "webpack": "^3.5.5"
   },
-  "dependencies": {}
+  "dependencies": {
+    "jest": "^20.0.4"
+  }
 }
