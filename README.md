@@ -4,9 +4,6 @@ Plain javascript media selector.
 ## Preview
 ![Media Manager](./preview.png)
 
-## Design
-![Design](./design.png)
-
 ## Usage
 ### html
 ```html
@@ -15,7 +12,7 @@ Plain javascript media selector.
 ```
 ### Javascript
 ```js
-import { init } from './manager'
+import { init } from './media-manager'
 import './manager.sass'
 
 init({
@@ -27,9 +24,13 @@ init({
     paths: ['https://unsplash.it/100/100?random&v=1', 'https://unsplash.it/100/100?random&v=2', 'https://unsplash.it/100/100?random&v=3', 'https://unsplash.it/100/100?random&v=4', 'https://unsplash.it/100/100?random&v=5', 'https://unsplash.it/100/100?random&v=6', 'https://unsplash.it/100/100?random&v=7', 'https://unsplash.it/100/100?random&v=8']
   },
   events: {
-    // Fires when the user pressed "Confirm"
+    // Fires when the user presses "Confirm".  The callback receives an array with the paths of all selected items.
     onConfirm: selectedPaths => {
       console.log(selectedPaths)
+    },
+    // Fires when the file input field fires a "change" event. The callback receives the event object
+    onFileSelectionChanged: changeEvent => {
+      console.log(changeEvent)
     }
   }
 })
@@ -37,7 +38,7 @@ init({
 ### Styles
 If you prefer importing the styles in a separate sass file use the following import statement.
 ```sass
-@import "manager"
+@import "media-manager.sass"
 ```
 
 ## Development

@@ -1,7 +1,5 @@
-import fetch from 'whatwg-fetch'
 import { toArray } from './utilities/array'
 import { addClassesToNode, mergeClasses, createClassSelectors } from './utilities/css'
-/* global FormData */
 
 const buildWrapper = settings => {
   let wrapper = document
@@ -80,25 +78,14 @@ const buildFooter = settings => {
 
   return footer
 }
-const hideMediaManager = settings => {
-  settings.elements.wrapper.innerHTML = ''
-}
-const postFileToEndpoint = (endpoint, file) => {
-  return new Promise((resolve, reject) => {
-    const data = new FormData()
-    data.append('file', file)
 
-    fetch(endpoint, {
-      method: 'POST',
-      body: data
-    }).then(response => resolve(file))
-      .catch(err => reject(err))
-  })
+const deleteMediaManager = settings => {
+  settings.elements.wrapper.innerHTML = ''
 }
 
 const toggleMediaManager = settings => {
   const isShown = settings.elements.wrapper.innerHTML !== ''
-  if (isShown) return hideMediaManager(settings)
+  if (isShown) return deleteMediaManager(settings)
 
   const wrapper = buildWrapper(settings)
 
@@ -112,26 +99,22 @@ const toggleMediaManager = settings => {
   registerEventListenersForMediaActions(settings)
   registerEventListenersForActionBar(settings)
 }
+
 const registerEventListenersForActionBar = settings => {
   const uploadSelector = mergeClasses(createClassSelectors(toArray(settings.classes.uploadButton)))
 
-  document.querySelector(uploadSelector).addEventListener('change', evt => {
-    const file = evt.target.files[0];
-
-    postFileToEndpoint(settings.uploadEndpoint, file)
-      .then(uploadedFile => settings.events.onUploaded(uploadedFile))
-  })
+  document.querySelector(uploadSelector).addEventListener('change', settings.events.onFileSelectionChanged)
 }
 
 const registerEventListenersForMediaActions = settings => {
   let selectedPaths = []
 
-  settings.elements.wrapper.addEventListener('click', evt => {
-    if (evt.target.classList.contains(settings.classes.item)) {
-      evt.target.classList.toggle(settings.classes.activeItem)
+  settings.elements.wrapper.addEventListener('click', ({target}) => {
+    if (target.classList.contains(settings.classes.item)) {
+      target.classList.toggle(settings.classes.activeItem)
 
-      const path = evt.target.dataset.src
-      const isActive = evt.target.classList.contains(settings.classes.activeItem)
+      const path = target.dataset.src
+      const isActive = target.classList.contains(settings.classes.activeItem)
 
       if (isActive) {
         selectedPaths = [...selectedPaths, path]
@@ -145,7 +128,7 @@ const registerEventListenersForMediaActions = settings => {
 
   document.querySelector(confirmSelector).addEventListener('click', () => {
     settings.events.onConfirm(selectedPaths)
-    hideMediaManager(settings)
+    deleteMediaManager(settings)
   })
 }
 
@@ -176,7 +159,7 @@ export const init = settings => {
     },
     events: {
       onConfirm: () => {},
-      onUploaded: () => {}
+      onFileSelectionChanged: () => {}
     },
     source: {
       paths: []

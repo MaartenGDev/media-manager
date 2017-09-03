@@ -2,10 +2,12 @@ const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
-  entry: './src/app.js',
+  entry: {
+    dist: ['./src/media-manager.js', './src/media-manager.sass'],
+  },
   output: {
-    filename: 'app.bundle.js',
-    path: path.resolve(__dirname, 'dist/')
+    filename: 'media-manager.js',
+    path: path.resolve(__dirname, 'dist')
   },
   module: {
     rules: [
@@ -28,6 +30,6 @@ module.exports = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin('app.css')
+    new ExtractTextPlugin('media-manager.css')
   ]
 }
