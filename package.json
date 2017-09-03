@@ -1,12 +1,13 @@
 {
   "name": "simple-media-manager",
+  "version": "1.0.0",
   "license": "MIT",
   "description": "an es6 media manager",
   "main": "src/media-manager.js",
   "author": "MaartenGDev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MaartenGDev/media-manager"
+    "url": "https://github.com/MaartenGDev/simple-media-manager"
   },
   "keywords": [
     "media",

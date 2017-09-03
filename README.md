@@ -1,3 +1,5 @@
+[![npm](https://img.shields.io/npm/dt/simple-media-manager.svg)]()
+[![npm](https://img.shields.io/npm/v/simple-media-manager.svg)]()
 # Media Manager
 Plain javascript media selector.
 
@@ -5,7 +7,7 @@ Plain javascript media selector.
 ![Media Manager](./preview.png)
 
 ## Usage
-### html
+### Html
 ```html
 <section class="app"></section>
 <button id="selectImages">Open</button>
