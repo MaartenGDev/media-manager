@@ -125,9 +125,15 @@ const registerEventListenersForMediaActions = settings => {
   })
 
   const confirmSelector = mergeSelectors(createClassSelector(toArray(settings.classes.confirmButton)))
+  const cancelSelector = mergeSelectors(createClassSelector(toArray(settings.classes.cancelButton)))
 
   document.querySelector(confirmSelector).addEventListener('click', () => {
     settings.events.onConfirm(selectedPaths)
+    deleteMediaManager(settings)
+  })
+
+  document.querySelector(cancelSelector).addEventListener('click', () => {
+    settings.events.onCancel()
     deleteMediaManager(settings)
   })
 }
@@ -158,6 +164,7 @@ export const init = settings => {
       title: 'Media Manager'
     },
     events: {
+      onCancel: () => {},
       onConfirm: () => {},
       onFileSelectionChanged: () => {}
     },
