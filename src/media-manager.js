@@ -66,10 +66,12 @@ const buildFooter = settings => {
   footer.classList.add(settings.classes.footer)
 
   let confirmButton = document.createElement('button')
+  confirmButton.setAttribute('type', 'button')
   confirmButton = addClassesToNode(confirmButton, settings.classes.confirmButton)
   confirmButton.appendChild(document.createTextNode('Confirm'))
 
   let cancelButton = document.createElement('button')
+  cancelButton.setAttribute('type', 'button')
   cancelButton = addClassesToNode(cancelButton, settings.classes.cancelButton)
   cancelButton.appendChild(document.createTextNode('Cancel'))
 
@@ -132,7 +134,8 @@ const registerEventListenersForMediaActions = settings => {
     deleteMediaManager(settings)
   })
 
-  document.querySelector(cancelSelector).addEventListener('click', () => {
+  document.querySelector(cancelSelector).addEventListener('click', evt => {
+    evt.preventDefault()
     settings.events.onCancel()
     deleteMediaManager(settings)
   })
