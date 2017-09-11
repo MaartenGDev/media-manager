@@ -44,8 +44,8 @@ mediaManager.init({
       console.log(changeEvent)
     },
     // Fires when the user presses "Cancel".
-    onCancel: selectedPaths => {
-      console.log(selectedPaths)
+    onCancel: () => {
+      console.log('Closed media manager popup')
     },
   }
 })
