@@ -1,4 +1,4 @@
-import { init } from '../src/media-manager'
+import MediaManager from '../src/media-manager'
 /* global DOMParser */
 const domParser = new DOMParser()
 
@@ -7,7 +7,9 @@ const mockDOMHtml = `<html><head></head><body><main><section class="wrapper"></s
 test('wrapper should be empty after init', () => {
   const mockDOM = domParser.parseFromString(mockDOMHtml, 'text/html')
 
-  init({
+  const mediaManager = new MediaManager()
+
+  mediaManager.init({
     elements: {
       toggleElement: mockDOM.querySelector('#selectImages'),
       wrapper: mockDOM.querySelector('.wrapper')
@@ -24,6 +26,8 @@ test('wrapper should be empty after init', () => {
       }
     }
   })
+
+  mediaManager.toggle()
 
   expect(mockDOM.documentElement.outerHTML).toEqual('<html><head></head><body><main><section class="wrapper"></section><button id="selectImages">Open</button></main></body></html>')
 })

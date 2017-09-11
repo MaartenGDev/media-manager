@@ -6,6 +6,13 @@ Plain javascript media selector.
 ## Preview
 ![Media Manager](./preview.png)
 
+## Installation
+```bash
+npm i simple-media-manager
+// OR
+yarn add simple-media-manager
+```
+
 ## Usage
 ### Html
 ```html
@@ -14,45 +21,53 @@ Plain javascript media selector.
 ```
 ### Javascript
 ```js
-import { init } from './media-manager'
-import './manager.sass'
+import MediaManager from 'simple-media-manager'
+import "simple-media-manager/src/media-manager.sass"
 
-init({
-  elements: {
-    toggleElement: document.querySelector('#selectImages'),
-    wrapper: document.querySelector('.app')
+const mediaManager = new MediaManager()
+
+mediaManager.init({
+elements: {
+  toggleElement: mockDOM.querySelector('#selectImages'),
+  wrapper: mockDOM.querySelector('.wrapper')
+},
+source: {
+  paths: ['https://unsplash.it/100/100?random&v=1', 'https://unsplash.it/100/100?random&v=2']
+},
+events: {
+  // Fires when the user presses "Confirm".  The callback receives an array with the paths of all selected items.
+  onConfirm: selectedPaths => {
+    console.log(selectedPaths)
   },
-  source: {
-    paths: ['https://unsplash.it/100/100?random&v=1', 'https://unsplash.it/100/100?random&v=2', 'https://unsplash.it/100/100?random&v=3', 'https://unsplash.it/100/100?random&v=4', 'https://unsplash.it/100/100?random&v=5', 'https://unsplash.it/100/100?random&v=6', 'https://unsplash.it/100/100?random&v=7', 'https://unsplash.it/100/100?random&v=8']
+  // Fires when the file input field fires a "change" event. The callback receives the event object
+  onFileSelectionChanged: changeEvent => {
+    console.log(changeEvent)
   },
-  events: {
-    // Fires when the user presses "Confirm".  The callback receives an array with the paths of all selected items.
-    onConfirm: selectedPaths => {
+   // Fires when the user presses "Cancel". 
+  onCancel: selectedPaths => {
       console.log(selectedPaths)
-    },
-    // Fires when the file input field fires a "change" event. The callback receives the event object
-    onFileSelectionChanged: changeEvent => {
-      console.log(changeEvent)
-    }
-  }
+  },
+}
 })
 ```
 ### Styles
 If you prefer importing the styles in a separate sass file use the following import statement.
 ```sass
-@import "media-manager.sass"
+@import "~simple-media-manager/src/media-manager"
 ```
 
 ## Development
 1: [Fork the repository](https://help.github.com/articles/fork-a-repo/)  
 2: Install the dependencies
 ```bash
-yarn install
-// or
 npm install
+// or
+yarn install
 ```
 3: start webpack
 ```bash
+npm run dev
+// or
 yarn dev
 ```
 

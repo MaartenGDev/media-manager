@@ -1,184 +1,193 @@
+import merge from 'deepmerge'
 import { toArray } from './utilities/array'
 import { addClassesToNode, mergeSelectors, createClassSelector } from './utilities/css'
 
-const buildWrapper = settings => {
-  let wrapper = document
-    .createElement('section')
+export class MediaManager {
+  buildWrapper (settings) {
+    let wrapper = document
+      .createElement('section')
 
-  wrapper.classList.add(settings.classes.wrapper)
+    wrapper.classList.add(settings.classes.wrapper)
 
-  return wrapper
-}
+    return wrapper
+  }
 
-const buildHeader = settings => {
-  const header = document.createElement('section')
-  header.classList.add(settings.classes.header)
+  _buildHeader (settings) {
+    const header = document.createElement('section')
+    header.classList.add(settings.classes.header)
 
-  const title = document.createElement('p')
-  title.classList.add(settings.classes.headerTitle)
+    const title = document.createElement('p')
+    title.classList.add(settings.classes.headerTitle)
 
-  const text = document.createTextNode(settings.names.title)
+    const text = document.createTextNode(settings.names.title)
 
-  title.appendChild(text)
+    title.appendChild(text)
 
-  header.appendChild(title)
+    header.appendChild(title)
 
-  return header
-}
+    return header
+  }
 
-const buildActionBar = settings => {
-  let uploadButton = document.createElement('input')
-  uploadButton.setAttribute('type', 'file')
+  _buildActionBar (settings) {
+    let uploadButton = document.createElement('input')
+    uploadButton.setAttribute('type', 'file')
 
-  uploadButton = addClassesToNode(uploadButton, settings.classes.uploadButton)
-  uploadButton.appendChild(document.createTextNode('Upload'))
+    uploadButton = addClassesToNode(uploadButton, settings.classes.uploadButton)
+    uploadButton.appendChild(document.createTextNode('Upload'))
 
-  let actionBar = document.createElement('section')
-  actionBar = addClassesToNode(actionBar, settings.classes.actionBar)
-  actionBar.appendChild(uploadButton)
+    let actionBar = document.createElement('section')
+    actionBar = addClassesToNode(actionBar, settings.classes.actionBar)
+    actionBar.appendChild(uploadButton)
 
-  return actionBar
-}
+    return actionBar
+  }
 
-const buildResourcePreviews = settings => {
-  const wrapper = document.createElement('section')
-  wrapper.classList.add(settings.classes.contentWrapper)
+  _buildResourcePreviews (settings) {
+    const wrapper = document.createElement('section')
+    wrapper.classList.add(settings.classes.contentWrapper)
 
-  const resources = settings.source.paths.map(path => {
-    const gridItem = document.createElement('section')
-    gridItem.classList.add(settings.classes.item)
-    gridItem.dataset.src = path
+    const resources = settings.source.paths.map(path => {
+      const gridItem = document.createElement('section')
+      gridItem.classList.add(settings.classes.item)
+      gridItem.dataset.src = path
 
-    gridItem.style.backgroundImage = `url('${path}')`
-    gridItem.style.backgroundSize = 'contain'
-    gridItem.style.backgroundRepeat = 'no-repeat'
+      gridItem.style.backgroundImage = `url('${path}')`
+      gridItem.style.backgroundSize = 'contain'
+      gridItem.style.backgroundRepeat = 'no-repeat'
 
-    return gridItem
-  })
+      return gridItem
+    })
 
-  resources.forEach(x => wrapper.appendChild(x))
+    resources.forEach(x => wrapper.appendChild(x))
 
-  return wrapper
-}
+    return wrapper
+  }
 
-const buildFooter = settings => {
-  const footer = document.createElement('section')
-  footer.classList.add(settings.classes.footer)
+  _buildFooter (settings) {
+    const footer = document.createElement('section')
+    footer.classList.add(settings.classes.footer)
 
-  let confirmButton = document.createElement('button')
-  confirmButton.setAttribute('type', 'button')
-  confirmButton = addClassesToNode(confirmButton, settings.classes.confirmButton)
-  confirmButton.appendChild(document.createTextNode('Confirm'))
+    let confirmButton = document.createElement('button')
+    confirmButton.setAttribute('type', 'button')
+    confirmButton = addClassesToNode(confirmButton, settings.classes.confirmButton)
+    confirmButton.appendChild(document.createTextNode('Confirm'))
 
-  let cancelButton = document.createElement('button')
-  cancelButton.setAttribute('type', 'button')
-  cancelButton = addClassesToNode(cancelButton, settings.classes.cancelButton)
-  cancelButton.appendChild(document.createTextNode('Cancel'))
+    let cancelButton = document.createElement('button')
+    cancelButton.setAttribute('type', 'button')
+    cancelButton = addClassesToNode(cancelButton, settings.classes.cancelButton)
+    cancelButton.appendChild(document.createTextNode('Cancel'))
 
-  footer.appendChild(confirmButton)
-  footer.appendChild(cancelButton)
+    footer.appendChild(confirmButton)
+    footer.appendChild(cancelButton)
 
-  return footer
-}
+    return footer
+  }
 
-const deleteMediaManager = settings => {
-  settings.elements.wrapper.innerHTML = ''
-}
+  _deleteMediaManager (settings) {
+    settings.elements.wrapper.innerHTML = ''
+  }
 
-const toggleMediaManager = settings => {
-  const isShown = settings.elements.wrapper.innerHTML !== ''
-  if (isShown) return deleteMediaManager(settings)
+  _toggleMediaManager (settings) {
+    const isShown = settings.elements.wrapper.innerHTML !== ''
+    if (isShown) return this._deleteMediaManager(settings)
 
-  const wrapper = buildWrapper(settings)
+    const wrapper = this.buildWrapper(settings)
 
-  wrapper.appendChild(buildHeader(settings))
-  wrapper.appendChild(buildActionBar(settings))
-  wrapper.appendChild(buildResourcePreviews(settings))
-  wrapper.appendChild(buildFooter(settings))
+    wrapper.appendChild(this._buildHeader(settings))
+    wrapper.appendChild(this._buildActionBar(settings))
+    wrapper.appendChild(this._buildResourcePreviews(settings))
+    wrapper.appendChild(this._buildFooter(settings))
 
-  settings.elements.wrapper.appendChild(wrapper)
+    settings.elements.wrapper.appendChild(wrapper)
 
-  registerEventListenersForMediaActions(settings)
-  registerEventListenersForActionBar(settings)
-}
+    this._registerEventListenersForMediaActions(settings)
+    this._registerEventListenersForActionBar(settings)
+  }
 
-const registerEventListenersForActionBar = settings => {
-  const uploadSelector = mergeSelectors(createClassSelector(toArray(settings.classes.uploadButton)))
+  toggle () {
+    this._toggleMediaManager(this.settings)
+  }
 
-  document.querySelector(uploadSelector).addEventListener('change', settings.events.onFileSelectionChanged)
-}
+  _registerEventListenersForActionBar (settings) {
+    const uploadSelector = mergeSelectors(createClassSelector(toArray(settings.classes.uploadButton)))
 
-const registerEventListenersForMediaActions = settings => {
-  let selectedPaths = []
+    document.querySelector(uploadSelector).addEventListener('change', settings.events.onFileSelectionChanged)
+  }
 
-  settings.elements.wrapper.addEventListener('click', ({target}) => {
-    if (target.classList.contains(settings.classes.item)) {
-      target.classList.toggle(settings.classes.activeItem)
+  _registerEventListenersForMediaActions (settings) {
+    let selectedPaths = []
 
-      const path = target.dataset.src
-      const isActive = target.classList.contains(settings.classes.activeItem)
+    settings.elements.wrapper.addEventListener('click', ({target}) => {
+      if (target.classList.contains(settings.classes.item)) {
+        target.classList.toggle(settings.classes.activeItem)
 
-      if (isActive) {
-        selectedPaths = [...selectedPaths, path]
-      } else {
-        selectedPaths = selectedPaths.filter(x => x !== path)
+        const path = target.dataset.src
+        const isActive = target.classList.contains(settings.classes.activeItem)
+
+        if (isActive) {
+          selectedPaths = [...selectedPaths, path]
+        } else {
+          selectedPaths = selectedPaths.filter(x => x !== path)
+        }
       }
-    }
-  })
+    })
 
-  const confirmSelector = mergeSelectors(createClassSelector(toArray(settings.classes.confirmButton)))
-  const cancelSelector = mergeSelectors(createClassSelector(toArray(settings.classes.cancelButton)))
+    const confirmSelector = mergeSelectors(createClassSelector(toArray(settings.classes.confirmButton)))
+    const cancelSelector = mergeSelectors(createClassSelector(toArray(settings.classes.cancelButton)))
 
-  document.querySelector(confirmSelector).addEventListener('click', () => {
-    settings.events.onConfirm(selectedPaths)
-    deleteMediaManager(settings)
-  })
+    document.querySelector(confirmSelector).addEventListener('click', () => {
+      settings.events.onConfirm(selectedPaths)
+      this._deleteMediaManager(settings)
+    })
 
-  document.querySelector(cancelSelector).addEventListener('click', evt => {
-    evt.preventDefault()
-    settings.events.onCancel()
-    deleteMediaManager(settings)
-  })
+    document.querySelector(cancelSelector).addEventListener('click', evt => {
+      evt.preventDefault()
+      settings.events.onCancel()
+      this._deleteMediaManager(settings)
+    })
+  }
+
+  init (settings) {
+    settings = merge({
+      elements: {
+        toggleElement: '',
+        wrapper: ''
+      },
+      settings: {
+        uploadEndpoint: ''
+      },
+      classes: {
+        wrapper: 'media-manager',
+        header: 'media-manager__header',
+        headerTitle: 'media-manager__title',
+        contentWrapper: 'media-manager__content',
+        item: 'media-manager__item',
+        activeItem: 'media-manager__item--active',
+        footer: 'media-manager__footer',
+        actionBar: 'media-manager__action-bar',
+        confirmButton: ['media-manager__button', 'media-manager__button--confirm'],
+        cancelButton: ['media-manager__button', 'media-manager__button--cancel'],
+        uploadButton: ['media-manager__button', 'media-manager__button--upload']
+      },
+      names: {
+        title: 'Media Manager'
+      },
+      events: {
+        onCancel: () => {},
+        onConfirm: () => {},
+        onFileSelectionChanged: () => {}
+      },
+      source: {
+        paths: []
+      }
+    }, settings)
+
+    this.settings = settings
+
+    settings.elements.toggleElement.addEventListener('click', () => {
+      this._toggleMediaManager(settings)
+    })
+  }
 }
 
-export const init = settings => {
-  settings = Object.assign({}, {
-    elements: {
-      toggleElement: '',
-      wrapper: ''
-    },
-    settings: {
-      uploadEndpoint: ''
-    },
-    classes: {
-      wrapper: 'media-manager',
-      header: 'media-manager__header',
-      headerTitle: 'media-manager__title',
-      contentWrapper: 'media-manager__content',
-      item: 'media-manager__item',
-      activeItem: 'media-manager__item--active',
-      footer: 'media-manager__footer',
-      actionBar: 'media-manager__action-bar',
-      confirmButton: ['media-manager__button', 'media-manager__button--confirm'],
-      cancelButton: ['media-manager__button', 'media-manager__button--cancel'],
-      uploadButton: ['media-manager__button', 'media-manager__button--upload']
-    },
-    names: {
-      title: 'Media Manager'
-    },
-    events: {
-      onCancel: () => {},
-      onConfirm: () => {},
-      onFileSelectionChanged: () => {}
-    },
-    source: {
-      paths: []
-    }
-  }, settings)
-
-  settings.elements.toggleElement.addEventListener('click', () => {
-    toggleMediaManager(settings)
-  })
-}
-
-export default {init}
+export default MediaManager
