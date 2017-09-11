@@ -22,32 +22,32 @@ yarn add simple-media-manager
 ### Javascript
 ```js
 import MediaManager from 'simple-media-manager'
-import "simple-media-manager/src/media-manager.sass"
+import 'simple-media-manager/src/media-manager.sass'
 
 const mediaManager = new MediaManager()
 
 mediaManager.init({
-elements: {
-  toggleElement: document.querySelector('#selectImages'),
-  wrapper: document.querySelector('.wrapper')
-},
-source: {
-  paths: ['https://unsplash.it/100/100?random', 'https://unsplash.it/100/100?random']
-},
-events: {
-  // Fires when the user presses "Confirm".  The callback receives an array with the paths of all selected items.
-  onConfirm: selectedPaths => {
-    console.log(selectedPaths)
+  elements: {
+    toggleElement: document.querySelector('#selectImages'),
+    wrapper: document.querySelector('.wrapper')
   },
-  // Fires when the file input field fires a "change" event. The callback receives the event object
-  onFileSelectionChanged: changeEvent => {
-    console.log(changeEvent)
+  source: {
+    paths: ['https://unsplash.it/100/100?random', 'https://unsplash.it/100/100?random']
   },
-   // Fires when the user presses "Cancel". 
-  onCancel: selectedPaths => {
+  events: {
+    // Fires when the user presses "Confirm".  The callback receives an array with the paths of all selected items.
+    onConfirm: selectedPaths => {
       console.log(selectedPaths)
-  },
-}
+    },
+    // Fires when the file input field fires a "change" event. The callback receives the event object
+    onFileSelectionChanged: changeEvent => {
+      console.log(changeEvent)
+    },
+    // Fires when the user presses "Cancel".
+    onCancel: selectedPaths => {
+      console.log(selectedPaths)
+    },
+  }
 })
 ```
 ### Styles
