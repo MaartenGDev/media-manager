@@ -1,5 +1,5 @@
-[![npm](https://img.shields.io/npm/dt/simple-media-manager.svg)]()
-[![npm](https://img.shields.io/npm/v/simple-media-manager.svg)]()
+[![npm](https://img.shields.io/npm/dt/simple-media-manager.svg)](https://www.npmjs.com/package/simple-media-manager)
+[![npm](https://img.shields.io/npm/v/simple-media-manager.svg)](https://www.npmjs.com/package/simple-media-manager)
 # Media Manager
 Plain javascript media selector.
 
@@ -28,11 +28,11 @@ const mediaManager = new MediaManager()
 
 mediaManager.init({
 elements: {
-  toggleElement: mockDOM.querySelector('#selectImages'),
-  wrapper: mockDOM.querySelector('.wrapper')
+  toggleElement: document.querySelector('#selectImages'),
+  wrapper: document.querySelector('.wrapper')
 },
 source: {
-  paths: ['https://unsplash.it/100/100?random&v=1', 'https://unsplash.it/100/100?random&v=2']
+  paths: ['https://unsplash.it/100/100?random', 'https://unsplash.it/100/100?random']
 },
 events: {
   // Fires when the user presses "Confirm".  The callback receives an array with the paths of all selected items.
