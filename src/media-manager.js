@@ -160,8 +160,8 @@ export class MediaManager {
   add (path) {
     const {wrapper, contentWrapper} = this.settings.classes
 
-    const wrapperSelector = mergeSelectors(createClassSelector(wrapper))
-    const contentWrapperSelector = mergeSelectors(createClassSelector(contentWrapper))
+    const wrapperSelector = mergeSelectors(createClassSelector(toArray(wrapper)))
+    const contentWrapperSelector = mergeSelectors(createClassSelector(toArray(contentWrapper)))
 
     this.settings.source.paths = [...this.settings.source.paths, path]
 
