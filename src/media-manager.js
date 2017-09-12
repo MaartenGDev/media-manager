@@ -165,7 +165,7 @@ export class MediaManager {
 
     this.settings.source.paths = [...this.settings.source.paths, path]
 
-    document.querySelector(`${wrapperSelector} ${contentWrapperSelector}`).innerHTML = this._buildResourcePreviews()
+    document.querySelector(`${wrapperSelector} ${contentWrapperSelector}`).outerHTML = this._buildResourcePreviews().outerHTML
   }
 
   init (settings) {
