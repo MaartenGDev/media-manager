@@ -3,7 +3,9 @@ import { toArray } from './utilities/array'
 import { addClassesToNode, mergeSelectors, createClassSelector } from './utilities/css'
 
 export class MediaManager {
-  buildWrapper (settings) {
+  buildWrapper () {
+    const settings = this.settings
+
     let wrapper = document
       .createElement('section')
 
@@ -12,7 +14,9 @@ export class MediaManager {
     return wrapper
   }
 
-  _buildHeader (settings) {
+  _buildHeader () {
+    const settings = this.settings
+
     const header = document.createElement('section')
     header.classList.add(settings.classes.header)
 
@@ -28,7 +32,9 @@ export class MediaManager {
     return header
   }
 
-  _buildActionBar (settings) {
+  _buildActionBar () {
+    const settings = this.settings
+
     let uploadButton = document.createElement('input')
     uploadButton.setAttribute('type', 'file')
 
@@ -42,7 +48,9 @@ export class MediaManager {
     return actionBar
   }
 
-  _buildResourcePreviews (settings) {
+  _buildResourcePreviews () {
+    const settings = this.settings
+
     const wrapper = document.createElement('section')
     wrapper.classList.add(settings.classes.contentWrapper)
 
@@ -63,7 +71,8 @@ export class MediaManager {
     return wrapper
   }
 
-  _buildFooter (settings) {
+  _buildFooter () {
+    const settings = this.settings
     const footer = document.createElement('section')
     footer.classList.add(settings.classes.footer)
 
@@ -83,11 +92,12 @@ export class MediaManager {
     return footer
   }
 
-  _deleteMediaManager (settings) {
-    settings.elements.wrapper.innerHTML = ''
+  _deleteMediaManager () {
+    this.settings.elements.wrapper.innerHTML = ''
   }
 
-  _toggleMediaManager (settings) {
+  _toggleMediaManager () {
+    const settings = this.settings
     const isShown = settings.elements.wrapper.innerHTML !== ''
     if (isShown) return this._deleteMediaManager(settings)
 
@@ -102,10 +112,6 @@ export class MediaManager {
 
     this._registerEventListenersForMediaActions(settings)
     this._registerEventListenersForActionBar(settings)
-  }
-
-  toggle () {
-    this._toggleMediaManager(this.settings)
   }
 
   _registerEventListenersForActionBar (settings) {
@@ -137,14 +143,29 @@ export class MediaManager {
 
     document.querySelector(confirmSelector).addEventListener('click', () => {
       settings.events.onConfirm(selectedPaths)
-      this._deleteMediaManager(settings)
+      this._deleteMediaManager()
     })
 
     document.querySelector(cancelSelector).addEventListener('click', evt => {
       evt.preventDefault()
       settings.events.onCancel()
-      this._deleteMediaManager(settings)
+      this._deleteMediaManager()
     })
+  }
+
+  toggle () {
+    this._toggleMediaManager()
+  }
+
+  add (path) {
+    const {wrapper, contentWrapper} = this.settings.classes
+
+    const wrapperSelector = mergeSelectors(createClassSelector(wrapper))
+    const contentWrapperSelector = mergeSelectors(createClassSelector(contentWrapper))
+
+    this.settings.source.paths = [...this.settings.source.paths, path]
+
+    document.querySelector(`${wrapperSelector} ${contentWrapperSelector}`).innerHTML = this._buildResourcePreviews()
   }
 
   init (settings) {
@@ -185,7 +206,7 @@ export class MediaManager {
     this.settings = settings
 
     settings.elements.toggleElement.addEventListener('click', () => {
-      this._toggleMediaManager(settings)
+      this._toggleMediaManager()
     })
   }
 }
