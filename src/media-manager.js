@@ -171,7 +171,6 @@ export class MediaManager {
   init (settings) {
     settings = merge({
       elements: {
-        toggleElement: '',
         wrapper: ''
       },
       settings: {
@@ -204,10 +203,6 @@ export class MediaManager {
     }, settings)
 
     this.settings = settings
-
-    settings.elements.toggleElement.addEventListener('click', () => {
-      this._toggleMediaManager()
-    })
   }
 }
 

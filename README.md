@@ -28,7 +28,6 @@ const mediaManager = new MediaManager()
 
 mediaManager.init({
   elements: {
-    toggleElement: document.querySelector('#selectImages'),
     wrapper: document.querySelector('.wrapper')
   },
   source: {
@@ -48,6 +47,11 @@ mediaManager.init({
       console.log('Closed media manager popup')
     },
   }
+})
+
+// Toggle media manager when the button is clicked.
+document.querySelector('#selectImages').addEventListener('click', () => {
+  mediaManager.toggle()
 })
 ```
 ### Styles

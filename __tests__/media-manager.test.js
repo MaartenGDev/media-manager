@@ -27,7 +27,9 @@ test('wrapper should be empty after init', () => {
     }
   })
 
-  mediaManager.toggle()
+  document.querySelector('#selectImages').addEventListener('click', () => {
+    mediaManager.toggle()
+  })
 
   expect(mockDOM.documentElement.outerHTML).toEqual('<html><head></head><body><main><section class="wrapper"></section><button id="selectImages">Open</button></main></body></html>')
 })
