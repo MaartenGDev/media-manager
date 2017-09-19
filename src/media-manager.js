@@ -60,7 +60,7 @@ export class MediaManager {
       gridItem.dataset.src = path
 
       gridItem.style.backgroundImage = `url('${path}')`
-      gridItem.style.backgroundSize = 'contain'
+      gridItem.style.backgroundSize = 'cover'
       gridItem.style.backgroundRepeat = 'no-repeat'
 
       return gridItem
