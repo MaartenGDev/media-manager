@@ -30,6 +30,10 @@ mediaManager.init({
   elements: {
     wrapper: document.querySelector('.wrapper')
   },
+  settings: {
+    // Default: true, Show dark overlay over entire screen to highlight media-manager popup
+    showOverlay: true
+  },
   source: {
     paths: ['https://unsplash.it/100/100?random', 'https://unsplash.it/100/100?random']
   },

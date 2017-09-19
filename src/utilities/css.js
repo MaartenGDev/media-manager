@@ -24,4 +24,8 @@ export const createClassSelector = selector => {
   return selector.map(c => startsWithSelectorTypeIndicator(c) ? c : `.${c}`)
 }
 
+export const createSelector = classes => {
+  return mergeSelectors(createClassSelector(toArray(classes)))
+}
+
 export default {addClassesToNode, mergeSelectors, createClassSelector}

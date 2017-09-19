@@ -1,6 +1,6 @@
 import merge from 'deepmerge'
 import { toArray } from './utilities/array'
-import { addClassesToNode, mergeSelectors, createClassSelector } from './utilities/css'
+import { addClassesToNode, mergeSelectors, createClassSelector, createSelector } from './utilities/css'
 
 export class MediaManager {
   buildWrapper () {
@@ -92,30 +92,61 @@ export class MediaManager {
     return footer
   }
 
+  _buildOverlay () {
+    let overlaySection = document.createElement('section')
+    overlaySection = addClassesToNode(overlaySection, this.settings.classes.overlay)
+
+    return overlaySection
+  }
+
+  _appendOverlayIfNotPresent () {
+    const overlaySelector = document.querySelector(createSelector(this.settings.classes.overlay))
+    if (overlaySelector !== null) return
+
+    const overlay = this._buildOverlay()
+
+    document.querySelector('body').appendChild(overlay)
+  }
+
+  _toggleOverlay (mediaManagerIsShown) {
+    this._appendOverlayIfNotPresent()
+    const overlaySelector = document.querySelector(createSelector(this.settings.classes.overlay))
+
+    overlaySelector.classList.toggle(this.settings.classes.activeOverlay, mediaManagerIsShown)
+  }
+
   _deleteMediaManager () {
+    this.settings.state.isShown = false
     this.settings.elements.wrapper.innerHTML = ''
   }
 
   _toggleMediaManager () {
     const settings = this.settings
-    const isShown = settings.elements.wrapper.innerHTML !== ''
+    const {isShown} = settings.state
+
+    if (settings.settings.showOverlay) {
+      this._toggleOverlay(!isShown)
+    }
+
     if (isShown) return this._deleteMediaManager(settings)
 
-    const wrapper = this.buildWrapper(settings)
+    const wrapper = this.buildWrapper()
 
-    wrapper.appendChild(this._buildHeader(settings))
-    wrapper.appendChild(this._buildActionBar(settings))
-    wrapper.appendChild(this._buildResourcePreviews(settings))
-    wrapper.appendChild(this._buildFooter(settings))
+    wrapper.appendChild(this._buildHeader())
+    wrapper.appendChild(this._buildActionBar())
+    wrapper.appendChild(this._buildResourcePreviews())
+    wrapper.appendChild(this._buildFooter())
 
     settings.elements.wrapper.appendChild(wrapper)
 
     this._registerEventListenersForMediaActions(settings)
     this._registerEventListenersForActionBar(settings)
+
+    this.settings.state.isShown = true
   }
 
   _registerEventListenersForActionBar (settings) {
-    const uploadSelector = mergeSelectors(createClassSelector(toArray(settings.classes.uploadButton)))
+    const uploadSelector = createSelector(settings.classes.uploadButton)
 
     document.querySelector(uploadSelector).addEventListener('change', settings.events.onFileSelectionChanged)
   }
@@ -138,18 +169,18 @@ export class MediaManager {
       }
     })
 
-    const confirmSelector = mergeSelectors(createClassSelector(toArray(settings.classes.confirmButton)))
-    const cancelSelector = mergeSelectors(createClassSelector(toArray(settings.classes.cancelButton)))
+    const confirmSelector = createSelector(settings.classes.confirmButton)
+    const cancelSelector = createSelector(settings.classes.cancelButton)
 
     document.querySelector(confirmSelector).addEventListener('click', () => {
       settings.events.onConfirm(selectedPaths)
-      this._deleteMediaManager()
+      this._toggleMediaManager()
     })
 
     document.querySelector(cancelSelector).addEventListener('click', evt => {
       evt.preventDefault()
       settings.events.onCancel()
-      this._deleteMediaManager()
+      this._toggleMediaManager()
     })
   }
 
@@ -160,8 +191,8 @@ export class MediaManager {
   add (path) {
     const {wrapper, contentWrapper} = this.settings.classes
 
-    const wrapperSelector = mergeSelectors(createClassSelector(toArray(wrapper)))
-    const contentWrapperSelector = mergeSelectors(createClassSelector(toArray(contentWrapper)))
+    const wrapperSelector = createSelector(wrapper)
+    const contentWrapperSelector = createSelector(contentWrapper)
 
     this.settings.source.paths = [...this.settings.source.paths, path]
 
@@ -173,11 +204,16 @@ export class MediaManager {
       elements: {
         wrapper: ''
       },
+      state: {
+        isShown: false
+      },
       settings: {
-        uploadEndpoint: ''
+        showOverlay: true
       },
       classes: {
         wrapper: 'media-manager',
+        overlay: 'media-manager__overlay',
+        activeOverlay: 'media-manager__overlay--active',
         header: 'media-manager__header',
         headerTitle: 'media-manager__title',
         contentWrapper: 'media-manager__content',
