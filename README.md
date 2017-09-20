@@ -32,10 +32,13 @@ mediaManager.init({
   },
   settings: {
     // Default: true, Show dark overlay over entire screen to highlight media-manager popup
-    showOverlay: true
+    showOverlay: true,
+    // Default: -1, Limit the amount of items that can be selected. -1 indicates an unlimited amount of selected items
+    maxSelectedItems: -1
+
   },
   source: {
-    paths: ['https://unsplash.it/100/100?random', 'https://unsplash.it/100/100?random']
+    resources: [{path: 'https://unsplash.it/100/100?random'}, {path: 'https://unsplash.it/100/100?random'}]
   },
   events: {
     // Fires when the user presses "Confirm".  The callback receives an array with the paths of all selected items.

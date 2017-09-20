@@ -1,6 +1,5 @@
 import merge from 'deepmerge'
-import { toArray } from './utilities/array'
-import { addClassesToNode, mergeSelectors, createClassSelector, createSelector } from './utilities/css'
+import { addClassesToNode, createSelector } from './utilities/css'
 
 export class MediaManager {
   buildWrapper () {
@@ -54,7 +53,9 @@ export class MediaManager {
     const wrapper = document.createElement('section')
     wrapper.classList.add(settings.classes.contentWrapper)
 
-    const resources = settings.source.paths.map(path => {
+    const resources = settings.source.resources.map(resource => {
+      const path = resource.path
+
       const gridItem = document.createElement('section')
       gridItem.classList.add(settings.classes.item)
       gridItem.dataset.src = path
@@ -139,33 +140,43 @@ export class MediaManager {
 
     settings.elements.wrapper.appendChild(wrapper)
 
-    this._registerEventListenersForMediaActions(settings)
-    this._registerEventListenersForActionBar(settings)
+    this._registerEventListenersForMediaActions()
+    this._registerEventListenersForActionBar()
 
     this.settings.state.isShown = true
   }
 
-  _registerEventListenersForActionBar (settings) {
+  _registerEventListenersForActionBar () {
+    const settings = this.settings
     const uploadSelector = createSelector(settings.classes.uploadButton)
 
     document.querySelector(uploadSelector).addEventListener('change', settings.events.onFileSelectionChanged)
   }
 
-  _registerEventListenersForMediaActions (settings) {
-    let selectedPaths = []
+  _registerEventListenersForMediaActions () {
+    const settings = this.settings
+    let selectedResources = []
 
     settings.elements.wrapper.addEventListener('click', ({target}) => {
       if (target.classList.contains(settings.classes.item)) {
-        target.classList.toggle(settings.classes.activeItem)
+        const hasSelectedMaxItems = selectedResources.length === settings.settings.maxSelectedItems
 
         const path = target.dataset.src
-        const isActive = target.classList.contains(settings.classes.activeItem)
+        const hasBeenSelected = selectedResources.filter(resource => resource.path === path).length > 0
 
-        if (isActive) {
-          selectedPaths = [...selectedPaths, path]
-        } else {
-          selectedPaths = selectedPaths.filter(x => x !== path)
+        if (hasBeenSelected) {
+          selectedResources = selectedResources.filter(resource => resource.path !== path)
+
+          target.classList.toggle(settings.classes.activeItem, false)
+        } else if (!hasSelectedMaxItems) {
+          selectedResources = [
+            ...selectedResources,
+            settings.source.resources.find(resource => resource.path === path)
+          ]
+
+          target.classList.toggle(settings.classes.activeItem, true)
         }
+
       }
     })
 
@@ -173,7 +184,7 @@ export class MediaManager {
     const cancelSelector = createSelector(settings.classes.cancelButton)
 
     document.querySelector(confirmSelector).addEventListener('click', () => {
-      settings.events.onConfirm(selectedPaths)
+      settings.events.onConfirm(selectedResources)
       this._toggleMediaManager()
     })
 
@@ -184,19 +195,30 @@ export class MediaManager {
     })
   }
 
+  on (eventName, callback) {
+    this.settings.events[eventName] = callback
+  }
+
   toggle () {
     this._toggleMediaManager()
   }
 
-  add (path) {
+  _isValidResource (resource) {
+    return typeof resource === 'object' && resource.hasOwnProperty('path')
+  }
+
+  add (resource) {
+    if (!this._isValidResource(resource)) return console.error('The resource has to be an object with a path key.')
     const {wrapper, contentWrapper} = this.settings.classes
 
     const wrapperSelector = createSelector(wrapper)
     const contentWrapperSelector = createSelector(contentWrapper)
 
-    this.settings.source.paths = [...this.settings.source.paths, path]
+    this.settings.source.resources = [...this.settings.source.resources, resource]
 
-    document.querySelector(`${wrapperSelector} ${contentWrapperSelector}`).outerHTML = this._buildResourcePreviews().outerHTML
+    if (this.settings.state.isShown) {
+      document.querySelector(`${wrapperSelector} ${contentWrapperSelector}`).outerHTML = this._buildResourcePreviews().outerHTML
+    }
   }
 
   init (settings) {
@@ -208,7 +230,8 @@ export class MediaManager {
         isShown: false
       },
       settings: {
-        showOverlay: true
+        showOverlay: true,
+        maxSelectedItems: -1
       },
       classes: {
         wrapper: 'media-manager',
@@ -234,7 +257,7 @@ export class MediaManager {
         onFileSelectionChanged: () => {}
       },
       source: {
-        paths: []
+        resources: []
       }
     }, settings)
 
