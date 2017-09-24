@@ -1,7 +1,7 @@
 import merge from 'deepmerge'
 import { addClassesToNode, createSelector } from './utilities/css'
 
-export class MediaManager {
+export default class MediaManager {
   buildWrapper () {
     const settings = this.settings
 
@@ -264,5 +264,3 @@ export class MediaManager {
     this.settings = settings
   }
 }
-
-export default MediaManager
