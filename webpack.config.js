@@ -2,18 +2,16 @@ const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
-  target: 'node',
-  entry: {
-    dist: ['./src/media-manager.js', './src/media-manager.sass'],
-  },
+  entry: './src/media-manager.js',
   output: {
     filename: 'media-manager.min.js',
     path: path.resolve(__dirname, 'dist'),
-    library: 'media-manager',
     libraryTarget: 'umd',
+    library: 'mediaManager'
   },
+  devtool: 'source-map',
   module: {
-    rules: [
+    loaders: [
       {
         test: /\.js$/,
         exclude: /(node_modules)/,

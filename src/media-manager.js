@@ -1,4 +1,6 @@
 import merge from 'deepmerge'
+import './media-manager.sass'
+
 import { addClassesToNode, createSelector } from './utilities/css'
 
 export default class MediaManager {

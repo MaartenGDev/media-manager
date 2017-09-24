@@ -1,6 +1,6 @@
 {
   "name": "simple-media-manager",
-  "version": "3.0.58",
+  "version": "3.0.64",
   "license": "MIT",
   "description": "an es6 media manager",
   "main": "./dist/media-manager.min.js",
@@ -17,7 +17,7 @@
   "test": "jest --coverage",
   "scripts": {
     "dev": "webpack --watch",
-    "build": "webpack",
+    "build": "webpack -p",
     "test": "jest --coverage",
     "prepublishOnly": "npm run build"
   },
@@ -39,5 +39,11 @@
   },
   "dependencies": {
     "deepmerge": "^1.5.2"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-2"
+    ]
   }
 }
