@@ -9,7 +9,6 @@ module.exports = {
     libraryTarget: 'umd',
     library: 'mediaManager'
   },
-  devtool: 'source-map',
   module: {
     loaders: [
       {
