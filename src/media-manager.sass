@@ -40,11 +40,15 @@ $offsetForAllSides: 40px
 
   &__item
     width: calc(100% / #{$itemsPerRow})
-    padding-top: calc(100% / #{$itemsPerRow})
     display: inline-block
 
+    &::after
+      content: ''
+      display: block
+      padding-top: 100%
+
     &--active
-      padding-top: calc((#{$popupWidth} / #{$itemsPerRow}) - (#{$active-border-width} * 2))
+      padding-top: calc(100% - (#{$active-border-width} * 2))
       width: calc((#{$popupWidth} / #{$itemsPerRow}) - (#{$active-border-width} * 2))
       border: $active-border-width solid $active-border-color
 
