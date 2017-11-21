@@ -24,7 +24,7 @@ export default class MediaManager {
     const title = document.createElement('p')
     title.classList.add(settings.classes.headerTitle)
 
-    const text = document.createTextNode(settings.names.title)
+    const text = document.createTextNode(settings.labels.title)
 
     title.appendChild(text)
 
@@ -250,7 +250,7 @@ export default class MediaManager {
         cancelButton: ['media-manager__button', 'media-manager__button--cancel'],
         uploadButton: ['media-manager__button', 'media-manager__button--upload']
       },
-      names: {
+      labels: {
         title: 'Media Manager'
       },
       events: {

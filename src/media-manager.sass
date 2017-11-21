@@ -6,6 +6,7 @@ $active-border-width: 3px
 $active-border-color: #333333
 $offsetForAllSides: 40px
 
+$totalHeightOfHeaderUploadAndFooterCombined: 44 + 48 + 47px
 
 .media-manager
   background-color: white
@@ -37,6 +38,8 @@ $offsetForAllSides: 40px
   &__content
     display: flex
     flex-wrap: wrap
+    max-height: calc(100% - #{$totalHeightOfHeaderUploadAndFooterCombined})
+    overflow-y: scroll
 
   &__item
     width: calc(100% / #{$itemsPerRow})
@@ -48,7 +51,6 @@ $offsetForAllSides: 40px
       padding-top: 100%
 
     &--active
-      padding-top: calc(100% - (#{$active-border-width} * 2))
       width: calc((#{$popupWidth} / #{$itemsPerRow}) - (#{$active-border-width} * 2))
       border: $active-border-width solid $active-border-color
 

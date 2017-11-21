@@ -1,6 +1,6 @@
 {
   "name": "simple-media-manager",
-  "version": "3.3.3",
+  "version": "3.3.5",
   "license": "MIT",
   "description": "an es6 media manager",
   "main": "./dist/media-manager.min.js",
@@ -26,8 +26,6 @@
     "babel-loader": "^7.1.2",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-env": "^1.6.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
     "css-loader": "^0.28.5",
     "extract-text-webpack-plugin": "^3.0.0",
     "jest": "^20.0.4",
@@ -42,8 +40,7 @@
   },
   "babel": {
     "presets": [
-      "es2015",
-      "stage-2"
+      "babel-preset-env"
     ]
   }
 }
