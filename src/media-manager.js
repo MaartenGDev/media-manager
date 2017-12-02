@@ -126,11 +126,6 @@ export default class MediaManager {
     overlaySelector.classList.toggle(this.settings.classes.activeOverlay, mediaManagerIsShown)
   }
 
-  _deleteMediaManager () {
-    this.settings.state.isShown = false
-    this.settings.elements.wrapper.innerHTML = ''
-  }
-
   _toggleMediaManager () {
     const settings = this.settings
     const {isShown} = settings.state
@@ -139,8 +134,9 @@ export default class MediaManager {
       this._toggleOverlay(!isShown)
     }
 
-    this._clearSelectedItems();
+    this._clearSelectedItems()
     const mediaManager = settings.elements.wrapper.querySelector(createSelector(settings.classes.wrapper))
+    console.log(mediaManager)
 
     if (mediaManager !== null) {
       mediaManager.style.display = isShown ? 'none' : 'block'
@@ -152,7 +148,7 @@ export default class MediaManager {
     this.settings.state.isShown = !isShown
   }
 
-  _clearSelectedItems(){
+  _clearSelectedItems () {
     const {classes} = this.settings
     const activeItemsSelector = createSelector([classes.item, classes.activeItem])
 
@@ -233,7 +229,7 @@ export default class MediaManager {
       e.addEventListener('click', evt => {
         evt.preventDefault()
         const selectedResource = source.resources.find(x => x.path === evt.target.dataset.src)
-        events.onDeleteItem(selectedResource)
+        return Promise.resolve(events.onDeleteItem(selectedResource))
           .then(deleteIsConfirmed => {
             if (deleteIsConfirmed) {
               this._remove(selectedResource)
@@ -252,7 +248,6 @@ export default class MediaManager {
     this.settings.state.selectedResources = []
 
     this._refreshResourcePreviews()
-    this._registerEventListenersForMediaActions()
   }
 
   _refreshResourcePreviews () {
@@ -262,6 +257,8 @@ export default class MediaManager {
     if (this.settings.state.isShown) {
       document.querySelector(`${wrapperSelector} ${contentWrapperSelector}`).outerHTML = this._buildResourcePreviews().outerHTML
     }
+
+    this._registerDeleteItemEventListeners()
   }
 
   on (eventName, callback) {
