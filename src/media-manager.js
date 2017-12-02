@@ -139,8 +139,29 @@ export default class MediaManager {
       this._toggleOverlay(!isShown)
     }
 
-    if (isShown) return this._deleteMediaManager(settings)
+    this._clearSelectedItems();
+    const mediaManager = settings.elements.wrapper.querySelector(createSelector(settings.classes.wrapper))
 
+    if (mediaManager !== null) {
+      mediaManager.style.display = isShown ? 'none' : 'block'
+    } else {
+      this._appendMediaManagerToWrapper()
+    }
+
+    this.settings.state.selectedResources = []
+    this.settings.state.isShown = !isShown
+  }
+
+  _clearSelectedItems(){
+    const {classes} = this.settings
+    const activeItemsSelector = createSelector([classes.item, classes.activeItem])
+
+    document.querySelectorAll(activeItemsSelector).forEach(x => {
+      x.classList.remove(classes.activeItem)
+    })
+  }
+
+  _appendMediaManagerToWrapper () {
     const wrapper = this._buildWrapper()
 
     wrapper.appendChild(this._buildHeader())
@@ -148,12 +169,10 @@ export default class MediaManager {
     wrapper.appendChild(this._buildResourcePreviews())
     wrapper.appendChild(this._buildFooter())
 
-    settings.elements.wrapper.appendChild(wrapper)
+    this.settings.elements.wrapper.appendChild(wrapper)
 
     this._registerEventListenersForMediaActions()
     this._registerEventListenersForActionBar()
-
-    this.settings.state.isShown = true
   }
 
   _registerEventListenersForActionBar () {
@@ -165,21 +184,21 @@ export default class MediaManager {
 
   _registerEventListenersForMediaActions () {
     const settings = this.settings
-    let selectedResources = []
 
     settings.elements.wrapper.addEventListener('click', ({target}) => {
       if (target.classList.contains(settings.classes.item)) {
+        const selectedResources = this.settings.state.selectedResources
         const hasSelectedMaxItems = selectedResources.length === settings.settings.maxSelectedItems
 
         const path = target.dataset.src
         const hasBeenSelected = selectedResources.filter(resource => resource.path === path).length > 0
 
         if (hasBeenSelected) {
-          selectedResources = selectedResources.filter(resource => resource.path !== path)
+          this.settings.state.selectedResources = selectedResources.filter(resource => resource.path !== path)
 
           target.classList.toggle(settings.classes.activeItem, false)
         } else if (!hasSelectedMaxItems) {
-          selectedResources = [
+          this.settings.state.selectedResources = [
             ...selectedResources,
             settings.source.resources.find(resource => resource.path === path)
           ]
@@ -193,7 +212,7 @@ export default class MediaManager {
     const cancelSelector = createSelector(settings.classes.cancelButton)
 
     document.querySelector(confirmSelector).addEventListener('click', () => {
-      settings.events.onConfirm(selectedResources)
+      settings.events.onConfirm(this.settings.state.selectedResources)
       this._toggleMediaManager()
     })
 
@@ -230,8 +249,10 @@ export default class MediaManager {
 
   _remove (resource) {
     this.settings.source.resources = [...this.settings.source.resources].filter(x => x.path !== resource.path)
+    this.settings.state.selectedResources = []
+
     this._refreshResourcePreviews()
-    this._registerDeleteItemEventListeners()
+    this._registerEventListenersForMediaActions()
   }
 
   _refreshResourcePreviews () {
@@ -263,7 +284,8 @@ export default class MediaManager {
         wrapper: ''
       },
       state: {
-        isShown: false
+        isShown: false,
+        selectedResources: []
       },
       settings: {
         showOverlay: true,
