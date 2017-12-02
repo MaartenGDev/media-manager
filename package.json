@@ -1,6 +1,6 @@
 {
   "name": "simple-media-manager",
-  "version": "3.4.1",
+  "version": "3.4.2",
   "license": "MIT",
   "description": "an es6 media manager",
   "main": "./dist/media-manager.min.js",

@@ -136,7 +136,6 @@ export default class MediaManager {
 
     this._clearSelectedItems()
     const mediaManager = settings.elements.wrapper.querySelector(createSelector(settings.classes.wrapper))
-    console.log(mediaManager)
 
     if (mediaManager !== null) {
       mediaManager.style.display = isShown ? 'none' : 'block'
