@@ -62,9 +62,17 @@ export default class MediaManager {
       gridItem.classList.add(settings.classes.item)
       gridItem.dataset.src = path
 
+      gridItem.style.position = `relative`
       gridItem.style.backgroundImage = `url('${path}')`
       gridItem.style.backgroundSize = 'cover'
       gridItem.style.backgroundRepeat = 'no-repeat'
+
+      let deleteIcon = document.createElement('i')
+      deleteIcon = addClassesToNode(deleteIcon, settings.classes.deleteItemIcon)
+      deleteIcon.appendChild(document.createTextNode('delete'))
+      deleteIcon.dataset.src = resource.path
+
+      gridItem.appendChild(deleteIcon)
 
       return gridItem
     })
@@ -178,7 +186,6 @@ export default class MediaManager {
 
           target.classList.toggle(settings.classes.activeItem, true)
         }
-
       }
     })
 
@@ -195,6 +202,45 @@ export default class MediaManager {
       settings.events.onCancel()
       this._toggleMediaManager()
     })
+
+    this._registerDeleteItemEventListeners()
+  }
+
+  _registerDeleteItemEventListeners () {
+    const {events, classes, source} = this.settings
+    const deleteItemSelector = createSelector(classes.deleteItemIcon);
+
+    [...document.querySelectorAll(deleteItemSelector)].forEach(e => {
+      e.addEventListener('click', evt => {
+        evt.preventDefault()
+        const selectedResource = source.resources.find(x => x.path === evt.target.dataset.src)
+        events.onDeleteItem(selectedResource)
+          .then(deleteIsConfirmed => {
+            if (deleteIsConfirmed) {
+              this._remove(selectedResource)
+            }
+          })
+      })
+    })
+  }
+
+  _isValidResource (resource) {
+    return typeof resource === 'object' && resource.hasOwnProperty('path')
+  }
+
+  _remove (resource) {
+    this.settings.source.resources = [...this.settings.source.resources].filter(x => x.path !== resource.path)
+    this._refreshResourcePreviews()
+    this._registerDeleteItemEventListeners()
+  }
+
+  _refreshResourcePreviews () {
+    const {wrapper, contentWrapper} = this.settings.classes
+    const wrapperSelector = createSelector(wrapper)
+    const contentWrapperSelector = createSelector(contentWrapper)
+    if (this.settings.state.isShown) {
+      document.querySelector(`${wrapperSelector} ${contentWrapperSelector}`).outerHTML = this._buildResourcePreviews().outerHTML
+    }
   }
 
   on (eventName, callback) {
@@ -205,22 +251,10 @@ export default class MediaManager {
     this._toggleMediaManager()
   }
 
-  _isValidResource (resource) {
-    return typeof resource === 'object' && resource.hasOwnProperty('path')
-  }
-
   add (resource) {
     if (!this._isValidResource(resource)) return console.error('The resource has to be an object with a path key.')
-    const {wrapper, contentWrapper} = this.settings.classes
-
-    const wrapperSelector = createSelector(wrapper)
-    const contentWrapperSelector = createSelector(contentWrapper)
-
     this.settings.source.resources = [...this.settings.source.resources, resource]
-
-    if (this.settings.state.isShown) {
-      document.querySelector(`${wrapperSelector} ${contentWrapperSelector}`).outerHTML = this._buildResourcePreviews().outerHTML
-    }
+    this._refreshResourcePreviews()
   }
 
   init (settings) {
@@ -244,6 +278,7 @@ export default class MediaManager {
         contentWrapper: 'media-manager__content',
         item: 'media-manager__item',
         activeItem: 'media-manager__item--active',
+        deleteItemIcon: ['material-icons', 'media-manager__trash-icon'],
         footer: 'media-manager__footer',
         actionBar: 'media-manager__action-bar',
         confirmButton: ['media-manager__button', 'media-manager__button--confirm'],
@@ -256,6 +291,7 @@ export default class MediaManager {
       events: {
         onCancel: () => {},
         onConfirm: () => {},
+        onDeleteItem: () => {},
         onFileSelectionChanged: () => {}
       },
       source: {
