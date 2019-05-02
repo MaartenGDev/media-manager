@@ -1,6 +1,6 @@
 {
   "name": "simple-media-manager",
-  "version": "3.4.2",
+  "version": "3.4.3",
   "license": "MIT",
   "description": "an es6 media manager",
   "main": "./dist/media-manager.min.js",
@@ -29,11 +29,11 @@
     "css-loader": "^0.28.5",
     "extract-text-webpack-plugin": "^3.0.0",
     "jest": "^20.0.4",
+    "node-sass": "^4.9.0",
     "sass-loader": "^6.0.6",
     "standard": "^10.0.3",
     "style-loader": "^0.18.2",
-    "webpack": "^3.5.5",
-    "node-sass": "^4.9.0"
+    "webpack": "^3.5.5"
   },
   "dependencies": {
     "deepmerge": "^1.5.2"
@@ -42,5 +42,11 @@
     "presets": [
       "babel-preset-env"
     ]
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|less|sass)$": "<rootDir>/__mocks__/styleMock.js"
+    }
   }
 }

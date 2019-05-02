@@ -1,13 +1,14 @@
-import MediaManager from '../src/media-manager'
-/* global DOMParser */
-const domParser = new DOMParser()
+import MediaManager from '../src/media-manager';
 
-const mockDOMHtml = `<html><head></head><body><main><section class="wrapper"></section><button id="selectImages">Open</button></main></body></html>`
+/* global DOMParser */
+const domParser = new DOMParser();
+
+const mockDOMHtml = `<html><head></head><body><main><section class="wrapper"></section><button id="selectImages">Open</button></main></body></html>`;
 
 test('wrapper should be empty after init', () => {
-  const mockDOM = domParser.parseFromString(mockDOMHtml, 'text/html')
+  const mockDOM = domParser.parseFromString(mockDOMHtml, 'text/html');
 
-  const mediaManager = new MediaManager()
+  const mediaManager = new MediaManager();
 
   mediaManager.init({
     elements: {
@@ -19,17 +20,17 @@ test('wrapper should be empty after init', () => {
     },
     events: {
       onConfirm: selectedPaths => {
-        console.log(selectedPaths)
+        console.log(selectedPaths);
       },
       onFileSelectionChanged: changeEvent => {
-        console.log(changeEvent)
+        console.log(changeEvent);
       }
     }
-  })
+  });
 
-  document.querySelector('#selectImages').addEventListener('click', () => {
-    mediaManager.toggle()
-  })
+  mockDOM.querySelector('#selectImages').addEventListener('click', () => {
+    mediaManager.toggle();
+  });
 
-  expect(mockDOM.documentElement.outerHTML).toEqual('<html><head></head><body><main><section class="wrapper"></section><button id="selectImages">Open</button></main></body></html>')
-})
+  expect(mockDOM.documentElement.outerHTML).toEqual('<html><head></head><body><main><section class="wrapper"></section><button id="selectImages">Open</button></main></body></html>');
+});
